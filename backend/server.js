@@ -28,7 +28,7 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'E-commerce API is running' });
 });
 
-// Fallback to index.html for non-API routes (simple SPA-style serving)
+// Fallback to index.html for non-API routes
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api')) return next();
   res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
@@ -41,21 +41,33 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/codealpha_ecommerce';
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/codealpha_ecommerce';
 
-mongoose
-  .connect(MONGO_URI)
-  .then(() => {
+// MongoDB Connection Logic for Serverless + Local
+let isConnected = false;
+
+const connectDB = async () => {
+  if (isConnected) return;
+  try {
+    await mongoose.connect(MONGO_URI);
+    isConnected = true;
     console.log('MongoDB connected successfully');
-    if (process.env.NODE_ENV !== 'production') {
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+  } catch (err) {
+    console.error('MongoDB connection error:', err.message);
+  }
+};
+
+// Local environments mein server listen karega, Vercel production par nahi
+if (process.env.NODE_ENV !== 'production') {
+  connectDB().then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
   });
+} else {
+  // Vercel handles invocation, connection ensures state
+  connectDB();
 }
 
+// Vercel serverless functions ke liye isey export karna zaroori hai
 module.exports = app;
-  })
-  .catch((err) => {
-    console.error('MongoDB connection error:', err.message);
-    process.exit(1);
-  });
