@@ -54,8 +54,8 @@ const sampleProducts = [
     description: 'Durable non-stick cookware set including pots, pans, and lids.',
     price: 89.99,
     category: 'Home & Kitchen',
-    image: 'https://images.unsplash.com/photo-1584990347449-39b78c0e5147?w=500',
-    stock: 12,
+    image: 'https://images.unsplash.com/photo-1541508168132-0b1d81249c25?w=900',
+    stock: 11,
     rating: 4.6
   },
   {
