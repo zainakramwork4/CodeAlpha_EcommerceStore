@@ -1,4 +1,4 @@
-# CodeAlpha_EcommerceStore
+# My_EcommerceStore
 
 A full stack e-commerce web application built for the **CodeAlpha Full Stack Development Internship** (Task 1).
 
